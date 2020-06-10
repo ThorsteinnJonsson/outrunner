@@ -15,7 +15,7 @@ const camera = createCamera();
 const controls = createControls(camera, renderer);
 
 const depth = 20;
-const width = 150;
+const width = 300;
 const depthStep = 2;
 const widthStep = 2;
 const gridmap = new GridMap(scene, depth, width, depthStep, widthStep);
@@ -59,7 +59,7 @@ function createControls(camera, renderer) {
   controls.dampingFactor = 0.75;
   controls.rotateSpeed = 0.75;
   controls.enableZoom = true;
-  // controls.enableKeys = false;
-  // controls.enablePan = false;
+  controls.enableKeys = false;
+  controls.enablePan = false;
   return controls;
 }

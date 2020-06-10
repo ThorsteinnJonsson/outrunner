@@ -85,13 +85,13 @@ export class GridMap {
 
   update() {
     this.chunks.forEach(function(chunk) {
-      chunk.position.z += 0.2;
+      chunk.position.z += 0.15;
     });
 
     if (this.chunks.length > 0) {
       const front = this.chunks[0];
 
-      if (front.position.z > 2*this.depth) {
+      if (front.position.z > 4*this.depth) {
         this._popChunks();
         const back = this.chunks[this.chunks.length-1];
         this._pushChunks(-back.position.z + this.depth);
