@@ -1,19 +1,19 @@
 import * as THREE from '../lib/three/src/Three.js';
 
 export class GridMap {
-  constructor(scene, depth, width, depthStep, widthStep) {
+  constructor(scene, params) {
     this.scene = scene;
-    this.depth = depth;
-    this.width = width;
-    this.depthStep = depthStep;
-    this.widthStep = widthStep;
+    this.depth = params.depth;
+    this.width = params.width;
+    this.depthStep = params.depthStep;
+    this.widthStep = params.widthStep;
 
     this.noiseGenerator = new SimplexNoise();
     this.noiseFactor = 1.0;
 
     // Chunck size is number of line segments * 2 point per line * 3 floats (x,y,z)
-    const numDepth = depth/depthStep;
-    const numWidth = width/widthStep;
+    const numDepth = this.depth / this.depthStep;
+    const numWidth = this.width / this.widthStep;
     const numSegmentsInChunk = ((numDepth+1)*numWidth + (numWidth+1)*numDepth);
     this.chunk_size = numSegmentsInChunk * 2 * 3;
 
@@ -22,7 +22,7 @@ export class GridMap {
     this.numChunksGenerated = 0;
     const maxChunks = 10;
     for (let cid = 0; cid < maxChunks; ++cid) {
-      this._pushChunks(cid * depth);
+      this._pushChunks(cid * this.depth);
     }
   }
 

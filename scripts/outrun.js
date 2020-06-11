@@ -36,12 +36,13 @@ const postProcessParams = {
 };
 const composer = createPostProcessing(scene, camera, postProcessParams);
 
-
-const depth = 20;
-const width = 300;
-const depthStep = 2;
-const widthStep = 2;
-const gridmap = new GridMap(scene, depth, width, depthStep, widthStep);
+const mapParams = {
+  depth: 20,
+  width: 300,
+  depthStep: 2,
+  widthStep: 2,
+};
+const gridmap = new GridMap(scene, mapParams);
 
 
 drawScene();
