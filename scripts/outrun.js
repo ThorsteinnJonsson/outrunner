@@ -5,12 +5,6 @@ import {EffectComposer} from '../lib/three/examples/jsm/postprocessing/EffectCom
 import {RenderPass} from '../lib/three/examples/jsm/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from '../lib/three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
-const params = {
-  exposure: 1,
-  bloomStrength: 1.5,
-  bloomThreshold: 0,
-  bloomRadius: 0,
-};
 
 // Performance monitor
 // const stats = new Stats();
@@ -29,27 +23,26 @@ document.body.appendChild(renderer.domElement);
 const camera = createCamera();
 const controls = createControls(camera, renderer);
 
+// Add lights
+scene.add(new THREE.AmbientLight(0x404040));
+camera.add(new THREE.PointLight(0xffffff, 1));
+
+// Add postprocessing effects
+const postProcessParams = {
+  exposure: 1,
+  bloomStrength: 1.0,
+  bloomThreshold: 0,
+  bloomRadius: 0.5,
+};
+const composer = createPostProcessing(scene, camera, postProcessParams);
+
+
 const depth = 20;
 const width = 300;
 const depthStep = 2;
 const widthStep = 2;
 const gridmap = new GridMap(scene, depth, width, depthStep, widthStep);
 
-
-// Lighting and shading
-scene.add(new THREE.AmbientLight(0x404040));
-camera.add(new THREE.PointLight(0xffffff, 1));
-
-const renderScene = new RenderPass(scene, camera);
-
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-bloomPass.threshold = params.bloomThreshold;
-bloomPass.strength = params.bloomStrength;
-bloomPass.radius = params.bloomRadius;
-
-const composer = new EffectComposer(renderer);
-composer.addPass(renderScene);
-composer.addPass(bloomPass);
 
 drawScene();
 
@@ -91,4 +84,18 @@ function createControls(camera, renderer) {
   controls.enableKeys = false;
   controls.enablePan = false;
   return controls;
+}
+
+function createPostProcessing(scene, camera, params) {
+  const renderScene = new RenderPass(scene, camera);
+
+  const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+  bloomPass.threshold = params.bloomThreshold;
+  bloomPass.strength = params.bloomStrength;
+  bloomPass.radius = params.bloomRadius;
+
+  const composer = new EffectComposer(renderer);
+  composer.addPass(renderScene);
+  composer.addPass(bloomPass);
+  return composer;
 }
