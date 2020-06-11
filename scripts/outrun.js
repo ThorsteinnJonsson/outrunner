@@ -1,10 +1,25 @@
 import {GridMap} from './grid_map.js';
+
 import * as THREE from '../lib/three/src/Three.js';
+
+// Controls
 import {OrbitControls} from '../lib/three/examples/jsm/controls/OrbitControls.js';
+
+// Postprocessing effects
 import {EffectComposer} from '../lib/three/examples/jsm/postprocessing/EffectComposer.js';
 import {RenderPass} from '../lib/three/examples/jsm/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from '../lib/three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
+window.onresize = function() {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(width, height);
+  composer.setSize(width, height);
+};
 
 // Performance monitor
 // const stats = new Stats();
@@ -29,10 +44,10 @@ camera.add(new THREE.PointLight(0xffffff, 1));
 
 // Add postprocessing effects
 const postProcessParams = {
-  exposure: 1,
+  exposure: 1.0,
   bloomStrength: 1.0,
-  bloomThreshold: 0,
-  bloomRadius: 0.5,
+  bloomThreshold: 0.0,
+  bloomRadius: 1.0,
 };
 const composer = createPostProcessing(scene, camera, postProcessParams);
 
@@ -84,6 +99,7 @@ function createControls(camera, renderer) {
   controls.enableZoom = true;
   controls.enableKeys = false;
   controls.enablePan = false;
+  controls.maxPolarAngle = Math.PI * 0.5;
   return controls;
 }
 
@@ -100,3 +116,5 @@ function createPostProcessing(scene, camera, params) {
   composer.addPass(bloomPass);
   return composer;
 }
+
+
