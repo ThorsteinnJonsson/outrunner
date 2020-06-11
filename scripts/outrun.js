@@ -96,7 +96,8 @@ function createControls(camera, renderer) {
   controls.enableDamping = true;
   controls.dampingFactor = 0.75;
   controls.rotateSpeed = 0.75;
-  controls.enableZoom = true;
+  controls.enableRotate = false;
+  controls.enableZoom = false;
   controls.enableKeys = false;
   controls.enablePan = false;
   controls.maxPolarAngle = Math.PI * 0.5;
