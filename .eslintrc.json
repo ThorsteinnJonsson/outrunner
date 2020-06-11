@@ -16,5 +16,6 @@
       "space-in-parens":"error",
       "max-len": "off",
       "no-unused-vars": "warn"
-    }
+    },
+    "ignorePatterns": "lib/*"
 }

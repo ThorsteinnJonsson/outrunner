@@ -1,4 +1,4 @@
-
+import * as THREE from '../lib/three/src/Three.js';
 
 export class GridMap {
   constructor(scene, depth, width, depthStep, widthStep) {

@@ -1,4 +1,16 @@
 import {GridMap} from './grid_map.js';
+import * as THREE from '../lib/three/src/Three.js';
+import {OrbitControls} from '../lib/three/examples/jsm/controls/OrbitControls.js';
+import {EffectComposer} from '../lib/three/examples/jsm/postprocessing/EffectComposer.js';
+import {RenderPass} from '../lib/three/examples/jsm/postprocessing/RenderPass.js';
+import {UnrealBloomPass} from '../lib/three/examples/jsm/postprocessing/UnrealBloomPass.js';
+
+const params = {
+  exposure: 1,
+  bloomStrength: 1.5,
+  bloomThreshold: 0,
+  bloomRadius: 0,
+};
 
 // Performance monitor
 // const stats = new Stats();
@@ -7,8 +19,11 @@ import {GridMap} from './grid_map.js';
 
 const scene = new THREE.Scene();
 
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({antialias: true});
+renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.toneMapping = THREE.ReinhardToneMapping;
+
 document.body.appendChild(renderer.domElement);
 
 const camera = createCamera();
@@ -20,6 +35,21 @@ const depthStep = 2;
 const widthStep = 2;
 const gridmap = new GridMap(scene, depth, width, depthStep, widthStep);
 
+
+// Lighting and shading
+scene.add(new THREE.AmbientLight(0x404040));
+camera.add(new THREE.PointLight(0xffffff, 1));
+
+const renderScene = new RenderPass(scene, camera);
+
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+bloomPass.threshold = params.bloomThreshold;
+bloomPass.strength = params.bloomStrength;
+bloomPass.radius = params.bloomRadius;
+
+const composer = new EffectComposer(renderer);
+composer.addPass(renderScene);
+composer.addPass(bloomPass);
 
 drawScene();
 
@@ -36,8 +66,7 @@ function drawScene() {
   gridmap.update();
 
   // Render
-  renderer.clear();
-  renderer.render(scene, camera);
+  composer.render();
 
   // stats.end();
 }
@@ -54,7 +83,7 @@ function createCamera() {
 }
 
 function createControls(camera, renderer) {
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.75;
   controls.rotateSpeed = 0.75;
